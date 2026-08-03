@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reddit Account Checker</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <h1>Reddit Account Checker</h1>
+      <p>Enter a Reddit username to see karma, activity stats, and personalized suggestions.</p>
+    </header>
+
+    <form id="check-form" class="search-form">
+      <input
+        id="username-input"
+        type="text"
+        placeholder="e.g. spez"
+        autocomplete="off"
+        maxlength="20"
+        required
+      />
+      <button type="submit" id="submit-btn">Check account</button>
+    </form>
+
+    <div id="status" class="status" hidden></div>
+
+    <section id="results" class="results" hidden>
+      <div class="profile-card">
+        <img id="profile-icon" class="avatar" src="" alt="" hidden />
+        <div>
+          <h2 id="profile-name"></h2>
+          <p id="profile-age" class="muted"></p>
+        </div>
+      </div>
+
+      <div class="stat-grid" id="stat-grid"></div>
+
+      <div class="panel">
+        <h3>Top subreddits</h3>
+        <div id="subreddit-list" class="chip-list"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Suggestions</h3>
+        <ul id="suggestion-list" class="suggestion-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
