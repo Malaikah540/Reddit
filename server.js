@@ -1,20 +1,66 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const USER_AGENT = 'RedditAccountChecker/1.0 (by /u/account-checker-tool)';
+const USER_AGENT = process.env.REDDIT_USER_AGENT || 'web:reddit-account-checker:1.0.0 (by /u/your_username)';
+const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
+const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
 
-async function redditGet(url) {
-  const res = await fetch(url, {
-    headers: { 'User-Agent': USER_AGENT },
+let cachedToken = null;
+let tokenExpiresAt = 0;
+
+async function getAccessToken() {
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    const err = new Error(
+      'Server is missing REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET environment variables. See README for setup.'
+    );
+    err.status = 500;
+    throw err;
+  }
+
+  if (cachedToken && Date.now() < tokenExpiresAt) {
+    return cachedToken;
+  }
+
+  const res = await fetch('https://www.reddit.com/api/v1/access_token', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Basic ' + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': USER_AGENT,
+    },
+    body: 'grant_type=client_credentials',
+  });
+
+  if (!res.ok) {
+    const err = new Error('Failed to authenticate with Reddit. Check your client ID/secret.');
+    err.status = 502;
+    throw err;
+  }
+
+  const json = await res.json();
+  cachedToken = json.access_token;
+  tokenExpiresAt = Date.now() + (json.expires_in - 60) * 1000;
+  return cachedToken;
+}
+
+async function redditGet(path) {
+  const token = await getAccessToken();
+  const res = await fetch(`https://oauth.reddit.com${path}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'User-Agent': USER_AGENT,
+    },
   });
   return res;
 }
 
 async function fetchAbout(username) {
-  const res = await redditGet(`https://www.reddit.com/user/${encodeURIComponent(username)}/about.json`);
+  const res = await redditGet(`/user/${encodeURIComponent(username)}/about.json`);
   if (res.status === 404) {
     const err = new Error('User not found');
     err.status = 404;
@@ -35,9 +81,7 @@ async function fetchAbout(username) {
 }
 
 async function fetchListing(username, kind) {
-  const res = await redditGet(
-    `https://www.reddit.com/user/${encodeURIComponent(username)}/${kind}.json?limit=100&raw_json=1`
-  );
+  const res = await redditGet(`/user/${encodeURIComponent(username)}/${kind}.json?limit=100&raw_json=1`);
   if (!res.ok) return [];
   const json = await res.json();
   return (json.data && json.data.children) || [];
