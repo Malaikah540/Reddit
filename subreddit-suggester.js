@@ -208,11 +208,11 @@ function keywordSuggest(siteText) {
     };
   }
 
-  return { method: 'keyword', suggestions: matched.slice(0, 8), note: null };
+  return { method: 'keyword', suggestions: matched.slice(0, 10), note: null };
 }
 
 async function aiSuggest(siteText) {
-  const prompt = `You're helping a marketing team find subreddits where genuine, disclosed community engagement fits a client's business. Based on the website content below, suggest 5-8 relevant subreddits.
+  const prompt = `You're helping a marketing team find subreddits where genuine, disclosed community engagement fits a client's business. Based on the website content below, suggest up to 10 relevant subreddits, ranked with the single best fit first.
 
 Title: ${siteText.title}
 Meta description: ${siteText.description}

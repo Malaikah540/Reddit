@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Reddit Account Checker</title>
 <link rel="stylesheet" href="style.css" />
+<script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
 </head>
 <body>
   <div class="app-shell">
@@ -15,20 +16,22 @@
         <a href="team.html">Team Dashboard</a>
         <a href="clients.html">Clients</a>
       </nav>
+      <button id="theme-toggle" class="theme-toggle" type="button"></button>
     </aside>
 
     <div class="main-content">
       <div class="wrap">
-        <header class="hero">
-          <h1>Reddit Account Checker</h1>
-          <p>Enter a Reddit username to see karma, activity stats, and personalized suggestions.</p>
+        <header class="hero hero-center">
+          <span class="hero-badge">⚡ Free internal tool</span>
+          <h1>Know exactly where your <span class="grad">Reddit account</span> stands</h1>
+          <p>Enter a username for a full breakdown: karma, posting activity, and clear next steps to grow it.</p>
         </header>
 
         <form id="check-form" class="search-form">
           <input
             id="username-input"
             type="text"
-            placeholder="e.g. spez"
+            placeholder="e.g. spez or u/spez"
             autocomplete="off"
             maxlength="20"
             required
@@ -63,6 +66,7 @@
     </div>
   </div>
 
+  <script src="theme.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

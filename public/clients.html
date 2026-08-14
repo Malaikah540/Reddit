@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Clients — Reddit Account Checker</title>
 <link rel="stylesheet" href="style.css" />
+<script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
 </head>
 <body>
   <div class="app-shell">
@@ -15,13 +16,15 @@
         <a href="team.html">Team Dashboard</a>
         <a href="clients.html" class="active">Clients</a>
       </nav>
+      <button id="theme-toggle" class="theme-toggle" type="button"></button>
     </aside>
 
     <div class="main-content">
       <div class="wrap">
         <header class="hero">
-          <h1>Clients</h1>
-          <p>Keep each client's details on file and get subreddit ideas based on their own website.</p>
+          <span class="hero-badge">🎯 Client research</span>
+          <h1>Find the right <span class="grad">subreddits</span> for each client</h1>
+          <p>Store client details, then get ranked subreddit ideas based on that client's own website.</p>
         </header>
 
         <div class="disclosure">
@@ -49,6 +52,7 @@
     </div>
   </div>
 
+  <script src="theme.js"></script>
   <script src="clients.js"></script>
 </body>
 </html>
