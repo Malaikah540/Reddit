@@ -1,16 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { jaccard } = require('./comment-assistant');
+
+const MAX_COMMENT_CHECKS = 200;
 
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'store.json');
 
 function load() {
   if (!fs.existsSync(DATA_FILE)) {
-    return { employees: [], assignments: [], clients: [] };
+    return { employees: [], assignments: [], clients: [], commentChecks: [] };
   }
   const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
   if (!data.clients) data.clients = [];
+  if (!data.commentChecks) data.commentChecks = [];
   return data;
 }
 
@@ -120,6 +124,30 @@ function deleteClient(id) {
   save(data);
 }
 
+function findSimilarComment(words) {
+  const data = load();
+  const wordSet = new Set(words);
+  let best = { similarity: 0, snippet: null };
+
+  for (const entry of data.commentChecks) {
+    const sim = jaccard(wordSet, new Set(entry.words));
+    if (sim > best.similarity) {
+      best = { similarity: sim, snippet: entry.snippet };
+    }
+  }
+
+  return best;
+}
+
+function addCommentCheck(words, snippet) {
+  const data = load();
+  data.commentChecks.push({ id: crypto.randomUUID(), words, snippet, checkedAt: new Date().toISOString() });
+  if (data.commentChecks.length > MAX_COMMENT_CHECKS) {
+    data.commentChecks = data.commentChecks.slice(-MAX_COMMENT_CHECKS);
+  }
+  save(data);
+}
+
 module.exports = {
   listEmployees,
   addEmployee,
@@ -134,4 +162,6 @@ module.exports = {
   addClient,
   updateClient,
   deleteClient,
+  findSimilarComment,
+  addCommentCheck,
 };

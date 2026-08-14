@@ -58,6 +58,20 @@
           <h3>Assignments</h3>
           <div id="assignment-list" class="assignment-list"></div>
         </section>
+
+        <section class="panel">
+          <h3>Comment Assistant</h3>
+          <p class="muted" style="margin-top:-0.4rem;">
+            Paste a comment draft you've already written (even with a little AI help) to check its
+            tone and get a safety read before posting. This gives feedback only — it never rewrites,
+            generates, or disguises anything for you.
+          </p>
+          <form id="comment-check-form" class="inline-form stacked">
+            <textarea id="comment-check-input" placeholder="Paste your draft comment here..." required></textarea>
+            <button type="submit">Check comment</button>
+          </form>
+          <div id="comment-check-result"></div>
+        </section>
       </div>
     </div>
   </div>

@@ -84,6 +84,15 @@ brand, disclose that per Reddit's rules. Data is stored locally in
 `data/store.json` (git-ignored) — there's no shared backend, so each person
 running the server locally has their own local list.
 
+The Team Dashboard also includes a **Comment Assistant** (`comment-assistant.js`):
+paste a comment draft you've already written and it flags genuine risk
+signals — generic/AI-boilerplate phrasing, self-promo/spam patterns, low
+effort, or near-duplicate wording against other comments checked recently
+(tracked via lightweight word-overlap fingerprints in `store.js`, capped at
+the last 200 checks). It only ever gives feedback — it never rewrites,
+generates, or "humanizes" text to disguise AI involvement; that's a
+deliberate line this tool doesn't cross.
+
 ## Clients
 
 `clients.html` keeps each client's name, website, and notes on file, and

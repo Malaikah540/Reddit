@@ -156,5 +156,53 @@ assignmentForm.addEventListener('submit', async (e) => {
   await loadAssignments();
 });
 
+const commentCheckForm = document.getElementById('comment-check-form');
+const commentCheckInput = document.getElementById('comment-check-input');
+const commentCheckResult = document.getElementById('comment-check-result');
+
+const LEVEL_LABEL = { low: '✅ Low risk', medium: '⚠️ Medium risk', high: '🚫 High risk' };
+
+commentCheckForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = commentCheckInput.value.trim();
+  if (!text) return;
+
+  commentCheckResult.innerHTML = '<span class="muted">Checking...</span>';
+
+  const res = await fetch('/api/comment-check', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    commentCheckResult.innerHTML = `<span class="error-text">${data.error}</span>`;
+    return;
+  }
+
+  const flagsHtml = data.flags.length
+    ? `<ul class="flag-list">${data.flags
+        .map((f) => `<li class="flag-item level-${f.level}">${f.message}</li>`)
+        .join('')}</ul>`
+    : '<p class="all-clear">No major risk signals found.</p>';
+
+  const toneHtml = data.toneNotes.length
+    ? `<div style="margin-top:0.6rem;"><label>Tone notes</label><ul class="tone-note-list">${data.toneNotes
+        .map((t) => `<li>${t}</li>`)
+        .join('')}</ul></div>`
+    : '';
+
+  commentCheckResult.innerHTML = `
+    <div class="comment-result">
+      <div class="risk-summary">
+        <span class="risk-badge-lvl ${data.riskLevel}">${LEVEL_LABEL[data.riskLevel]}</span>
+      </div>
+      ${flagsHtml}
+      ${toneHtml}
+    </div>
+  `;
+});
+
 loadEmployees();
 loadAssignments();

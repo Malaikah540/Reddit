@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const store = require('./store');
 const { suggestSubreddits } = require('./subreddit-suggester');
+const { analyzeComment, wordSet } = require('./comment-assistant');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -413,6 +414,36 @@ app.patch('/api/clients/:id', (req, res) => {
 app.delete('/api/clients/:id', (req, res) => {
   store.deleteClient(req.params.id);
   res.status(204).end();
+});
+
+// --- Comment assistant: gives tone feedback and flags genuine risk signals
+// (generic/AI-boilerplate phrasing, self-promo risk, low effort, near-
+// duplicate of something already checked) on a comment someone already
+// wrote. It never rewrites, generates, or "humanizes" text — the point is
+// to help the author notice issues and fix them in their own words.
+
+app.post('/api/comment-check', (req, res) => {
+  const text = (req.body.text || '').trim();
+
+  if (!text) return res.status(400).json({ error: 'Paste a draft comment to check.' });
+  if (text.length > 5000) return res.status(400).json({ error: 'That\'s too long to check (max 5000 characters).' });
+
+  const analysis = analyzeComment(text);
+  const words = Array.from(wordSet(text));
+  const { similarity, snippet } = store.findSimilarComment(words);
+
+  if (similarity > 0.75 && snippet) {
+    analysis.flags.push({
+      type: 'duplicate-risk',
+      level: 'high',
+      message: `This closely overlaps (${Math.round(similarity * 100)}% shared wording) with another comment checked recently ("${snippet}${snippet.length >= 140 ? '...' : ''}"). Near-identical wording across posts/accounts is a common signal of coordinated activity — make sure this is genuinely your own take.`,
+    });
+    analysis.riskLevel = 'high';
+  }
+
+  store.addCommentCheck(words, text.slice(0, 140));
+
+  res.json(analysis);
 });
 
 app.get('/api/clients/:id/suggestions', async (req, res) => {
