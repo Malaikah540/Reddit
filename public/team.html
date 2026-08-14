@@ -7,48 +7,57 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="wrap">
-    <header class="hero">
-      <h1>Team Dashboard</h1>
-      <p>Track each teammate's own, disclosed Reddit account and jot shared focus notes.</p>
-      <nav class="top-nav">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">R</span> Account Suite</div>
+      <nav>
         <a href="index.html">Account Checker</a>
         <a href="team.html" class="active">Team Dashboard</a>
+        <a href="clients.html">Clients</a>
       </nav>
-    </header>
+    </aside>
 
-    <div class="disclosure">
-      <strong>How to use this:</strong> assignments here should only ever point to an account the
-      teammate genuinely owns and posts as themselves. Focus notes are internal talking points for
-      your team — any public post must be written by the teammate in their own words and, where
-      relevant, disclose their affiliation. This tool does not draft, generate, or post comments on
-      anyone's behalf.
+    <div class="main-content">
+      <div class="wrap">
+        <header class="hero">
+          <h1>Team Dashboard</h1>
+          <p>Track each teammate's own, disclosed Reddit account and jot shared focus notes.</p>
+        </header>
+
+        <div class="disclosure">
+          <strong>How to use this:</strong> assignments here should only ever point to an account the
+          teammate genuinely owns and posts as themselves. Focus notes are internal talking points for
+          your team — any public post must be written by the teammate in their own words and, where
+          relevant, disclose their affiliation. This tool does not draft, generate, or post comments on
+          anyone's behalf.
+        </div>
+
+        <section class="panel">
+          <h3>Employees</h3>
+          <form id="employee-form" class="inline-form">
+            <input id="employee-name" type="text" placeholder="Employee name" required />
+            <button type="submit">Add employee</button>
+          </form>
+          <ul id="employee-list" class="plain-list"></ul>
+        </section>
+
+        <section class="panel">
+          <h3>New assignment</h3>
+          <form id="assignment-form" class="inline-form stacked">
+            <select id="assignment-employee" required></select>
+            <input id="assignment-username" type="text" placeholder="Their Reddit username" required />
+            <textarea id="assignment-note" placeholder="Focus note for today (e.g. subreddit/topic to engage with, in their own voice)"></textarea>
+            <button type="submit">Add assignment</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Assignments</h3>
+          <div id="assignment-list" class="assignment-list"></div>
+        </section>
+      </div>
     </div>
-
-    <section class="panel">
-      <h3>Employees</h3>
-      <form id="employee-form" class="inline-form">
-        <input id="employee-name" type="text" placeholder="Employee name" required />
-        <button type="submit">Add employee</button>
-      </form>
-      <ul id="employee-list" class="plain-list"></ul>
-    </section>
-
-    <section class="panel">
-      <h3>New assignment</h3>
-      <form id="assignment-form" class="inline-form stacked">
-        <select id="assignment-employee" required></select>
-        <input id="assignment-username" type="text" placeholder="Their Reddit username" required />
-        <textarea id="assignment-note" placeholder="Focus note for today (e.g. subreddit/topic to engage with, in their own voice)"></textarea>
-        <button type="submit">Add assignment</button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <h3>Assignments</h3>
-      <div id="assignment-list" class="assignment-list"></div>
-    </section>
-  </main>
+  </div>
 
   <script src="team.js"></script>
 </body>

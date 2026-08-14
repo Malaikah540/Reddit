@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clients — Reddit Account Checker</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">R</span> Account Suite</div>
+      <nav>
+        <a href="index.html">Account Checker</a>
+        <a href="team.html">Team Dashboard</a>
+        <a href="clients.html" class="active">Clients</a>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+      <div class="wrap">
+        <header class="hero">
+          <h1>Clients</h1>
+          <p>Keep each client's details on file and get subreddit ideas based on their own website.</p>
+        </header>
+
+        <div class="disclosure">
+          <strong>How to use this:</strong> suggestions are a research starting point based on a
+          client's own public site content — they identify communities that are topically relevant,
+          nothing more. Any actual participation should be genuine, written by a real person in their
+          own voice, and follow each subreddit's self-promotion rules and disclosure norms.
+        </div>
+
+        <section class="panel">
+          <h3>Add a client</h3>
+          <form id="client-form" class="inline-form stacked">
+            <input id="client-name" type="text" placeholder="Client name (e.g. AdGPT)" required />
+            <input id="client-website" type="url" placeholder="https://client-website.com" required />
+            <textarea id="client-notes" placeholder="Notes (industry, audience, anything worth remembering) — optional"></textarea>
+            <button type="submit">Add client</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Clients</h3>
+          <div id="client-list" class="client-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="clients.js"></script>
+</body>
+</html>

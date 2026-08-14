@@ -1,8 +1,14 @@
 # Reddit Account Checker
 
-A small web tool that looks up a Reddit username via Reddit's public JSON API
-and reports karma, recent activity stats, and personalized suggestions for
-improving the account.
+A small internal web tool with three parts, linked from the sidebar:
+
+- **Account Checker** — look up any public Reddit username and see karma,
+  recent activity stats, and personalized suggestions for improving the
+  account.
+- **Team Dashboard** — track which teammate owns which (their own, disclosed)
+  Reddit account, with real live stats and a shared internal focus note.
+- **Clients** — keep client details on file and get subreddit suggestions
+  based on that client's own website content.
 
 ## How it works
 
@@ -77,3 +83,23 @@ be written by the account owner in their own words; if it's on behalf of a
 brand, disclose that per Reddit's rules. Data is stored locally in
 `data/store.json` (git-ignored) — there's no shared backend, so each person
 running the server locally has their own local list.
+
+## Clients
+
+`clients.html` keeps each client's name, website, and notes on file, and
+suggests subreddits that are topically relevant to that client's own public
+site content — a research starting point, not a targeting or posting engine.
+
+- Click "Suggest subreddits" on a client to fetch their site and get a short
+  list of relevant subreddits with a one-line reason each.
+- **Without** an `ANTHROPIC_API_KEY` set, this uses a keyword-matching
+  fallback (see `subreddit-suggester.js`) against a curated list of common
+  industries/categories — works immediately, no setup required.
+- **With** an `ANTHROPIC_API_KEY` set in `.env` (see `.env.example`), the same
+  button instead sends the site's title/description/text to Claude for
+  open-ended, more accurate suggestions. No code changes needed to switch —
+  it upgrades automatically once the key is present.
+- Results only ever reflect what's already genuinely relevant to a client's
+  own site. Any actual participation in a suggested subreddit should be
+  written by a real person, in their own voice, following that subreddit's
+  self-promotion rules and disclosure norms.

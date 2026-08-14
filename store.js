@@ -7,9 +7,11 @@ const DATA_FILE = path.join(DATA_DIR, 'store.json');
 
 function load() {
   if (!fs.existsSync(DATA_FILE)) {
-    return { employees: [], assignments: [] };
+    return { employees: [], assignments: [], clients: [] };
   }
-  return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  if (!data.clients) data.clients = [];
+  return data;
 }
 
 function save(data) {
@@ -79,6 +81,45 @@ function getAssignment(id) {
   return data.assignments.find((a) => a.id === id) || null;
 }
 
+function listClients() {
+  return load().clients;
+}
+
+function getClient(id) {
+  return load().clients.find((c) => c.id === id) || null;
+}
+
+function addClient({ name, website, notes }) {
+  const data = load();
+  const client = {
+    id: crypto.randomUUID(),
+    name,
+    website,
+    notes: notes || '',
+    createdAt: new Date().toISOString(),
+  };
+  data.clients.push(client);
+  save(data);
+  return client;
+}
+
+function updateClient(id, { name, website, notes }) {
+  const data = load();
+  const client = data.clients.find((c) => c.id === id);
+  if (!client) return null;
+  if (name !== undefined) client.name = name;
+  if (website !== undefined) client.website = website;
+  if (notes !== undefined) client.notes = notes;
+  save(data);
+  return client;
+}
+
+function deleteClient(id) {
+  const data = load();
+  data.clients = data.clients.filter((c) => c.id !== id);
+  save(data);
+}
+
 module.exports = {
   listEmployees,
   addEmployee,
@@ -88,4 +129,9 @@ module.exports = {
   updateAssignment,
   deleteAssignment,
   getAssignment,
+  listClients,
+  getClient,
+  addClient,
+  updateClient,
+  deleteClient,
 };

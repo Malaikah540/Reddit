@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const store = require('./store');
+const { suggestSubreddits } = require('./subreddit-suggester');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -368,6 +369,62 @@ app.get('/api/assignments/:id/status', async (req, res) => {
   } catch (err) {
     const status = err.status || 500;
     res.status(status).json({ error: err.message || 'Something went wrong.' });
+  }
+});
+
+// --- Clients: each client has a website on file. Subreddit suggestions are
+// research aids based on that site's own public content — a starting point
+// for genuine, disclosed community engagement, not a posting/comment engine.
+
+function isValidUrl(value) {
+  try {
+    const u = new URL(value);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+app.get('/api/clients', (req, res) => {
+  res.json(store.listClients());
+});
+
+app.post('/api/clients', (req, res) => {
+  const name = (req.body.name || '').trim();
+  const website = (req.body.website || '').trim();
+  const notes = req.body.notes || '';
+
+  if (!name) return res.status(400).json({ error: 'Client name is required.' });
+  if (!isValidUrl(website)) return res.status(400).json({ error: 'Enter a valid website URL (including https://).' });
+
+  res.status(201).json(store.addClient({ name, website, notes }));
+});
+
+app.patch('/api/clients/:id', (req, res) => {
+  const updated = store.updateClient(req.params.id, {
+    name: req.body.name,
+    website: req.body.website,
+    notes: req.body.notes,
+  });
+  if (!updated) return res.status(404).json({ error: 'Client not found.' });
+  res.json(updated);
+});
+
+app.delete('/api/clients/:id', (req, res) => {
+  store.deleteClient(req.params.id);
+  res.status(204).end();
+});
+
+app.get('/api/clients/:id/suggestions', async (req, res) => {
+  const client = store.getClient(req.params.id);
+  if (!client) return res.status(404).json({ error: 'Client not found.' });
+
+  try {
+    const result = await suggestSubreddits(client.website);
+    res.json(result);
+  } catch (err) {
+    const status = err.status || 500;
+    res.status(status).json({ error: err.message || 'Could not generate suggestions.' });
   }
 });
 
