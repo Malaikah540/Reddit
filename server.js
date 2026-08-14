@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const store = require('./store');
 const { suggestSubreddits } = require('./subreddit-suggester');
-const { analyzeComment, wordSet } = require('./comment-assistant');
+const { analyzeComment, computeSafety, wordSet, aiFeedback } = require('./comment-assistant');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -422,7 +422,7 @@ app.delete('/api/clients/:id', (req, res) => {
 // wrote. It never rewrites, generates, or "humanizes" text — the point is
 // to help the author notice issues and fix them in their own words.
 
-app.post('/api/comment-check', (req, res) => {
+app.post('/api/comment-check', async (req, res) => {
   const text = (req.body.text || '').trim();
 
   if (!text) return res.status(400).json({ error: 'Paste a draft comment to check.' });
@@ -438,10 +438,15 @@ app.post('/api/comment-check', (req, res) => {
       level: 'high',
       message: `This closely overlaps (${Math.round(similarity * 100)}% shared wording) with another comment checked recently ("${snippet}${snippet.length >= 140 ? '...' : ''}"). Near-identical wording across posts/accounts is a common signal of coordinated activity — make sure this is genuinely your own take.`,
     });
-    analysis.riskLevel = 'high';
+    const recomputed = computeSafety(analysis.flags, analysis.toneNotes);
+    analysis.riskLevel = recomputed.level;
+    analysis.safetyScore = recomputed.score;
   }
 
   store.addCommentCheck(words, text.slice(0, 140));
+
+  const aiNotes = await aiFeedback(text);
+  if (aiNotes && aiNotes.length) analysis.aiNotes = aiNotes;
 
   res.json(analysis);
 });

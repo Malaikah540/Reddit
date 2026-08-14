@@ -188,18 +188,30 @@ commentCheckForm.addEventListener('submit', async (e) => {
     : '<p class="all-clear">No major risk signals found.</p>';
 
   const toneHtml = data.toneNotes.length
-    ? `<div style="margin-top:0.6rem;"><label>Tone notes</label><ul class="tone-note-list">${data.toneNotes
+    ? `<div style="margin-top:0.6rem;"><label>Tone notes (heuristic)</label><ul class="tone-note-list">${data.toneNotes
         .map((t) => `<li>${t}</li>`)
         .join('')}</ul></div>`
     : '';
+
+  const aiHtml =
+    data.aiNotes && data.aiNotes.length
+      ? `<div style="margin-top:0.6rem;"><label>AI coaching notes <span class="badge">Claude</span></label><ul class="tone-note-list">${data.aiNotes
+          .map((t) => `<li>${t}</li>`)
+          .join('')}</ul></div>`
+      : '';
 
   commentCheckResult.innerHTML = `
     <div class="comment-result">
       <div class="risk-summary">
         <span class="risk-badge-lvl ${data.riskLevel}">${LEVEL_LABEL[data.riskLevel]}</span>
+        <span class="safety-score ${data.riskLevel}">${data.safetyScore}% safe to post</span>
+      </div>
+      <div class="safety-bar-track">
+        <div class="safety-bar-fill ${data.riskLevel}" style="width:${data.safetyScore}%"></div>
       </div>
       ${flagsHtml}
       ${toneHtml}
+      ${aiHtml}
     </div>
   `;
 });

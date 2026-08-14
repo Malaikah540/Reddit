@@ -93,6 +93,22 @@ the last 200 checks). It only ever gives feedback — it never rewrites,
 generates, or "humanizes" text to disguise AI involvement; that's a
 deliberate line this tool doesn't cross.
 
+**How the score is calculated** (transparently, on purpose — see
+`computeSafety()` in `comment-assistant.js`): it's a plain weighted sum, not
+a trained model. Starting at 100%, each **high**-severity flag (self-promo/
+spam, near-duplicate wording) costs 50 points, each **medium** flag (generic
+AI-boilerplate phrasing, low effort) costs 25, and each minor tone note costs
+5. The result is clamped to 0–100% and bucketed into the Low/Medium/High
+badge (≥85% low, 50–84% medium, <50% high). Adjust the phrase lists or
+penalty weights directly in that file if you want it stricter or looser.
+
+**Without** an `ANTHROPIC_API_KEY`, that's the whole check. **With** one set
+in `.env`, the same request also asks Claude for 2-4 short coaching notes on
+the same draft — framed strictly as feedback ("this reads scripted, add a
+concrete detail"), never as a rewritten version of the comment. That
+boundary is enforced in the prompt itself (`aiFeedback()`), consistent with
+the rest of this tool: analysis and coaching only, never generation.
+
 ## Clients
 
 `clients.html` keeps each client's name, website, and notes on file, and
