@@ -59,3 +59,21 @@ Then open http://localhost:3000 and enter a Reddit username.
 - Private, suspended, or nonexistent accounts return a clear error message.
 - Suggestions are based on a snapshot of the user's ~100 most recent posts and
   comments, not their full history.
+
+## Team dashboard
+
+`team.html` (linked from the top nav) lets a team track their own accounts:
+
+- Add employees, and assign each one to a Reddit account **they genuinely own
+  and post as themselves**.
+- Pull real, live status (karma, activity, upvote ratio, subreddits they
+  already participate in) for each assigned account via the same checker
+  logic above.
+- Keep a shared "focus note" per assignment — internal talking points only.
+
+This intentionally does **not** generate, ghostwrite, or schedule comments,
+and does not take screenshots or automate posting. Any public activity must
+be written by the account owner in their own words; if it's on behalf of a
+brand, disclose that per Reddit's rules. Data is stored locally in
+`data/store.json` (git-ignored) — there's no shared backend, so each person
+running the server locally has their own local list.

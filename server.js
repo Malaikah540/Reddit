@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const store = require('./store');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -270,32 +271,100 @@ function buildSuggestions(stats) {
   return suggestions;
 }
 
+function isValidUsername(username) {
+  return /^[A-Za-z0-9_-]{3,20}$/.test(username);
+}
+
+async function checkAccount(username) {
+  const [about, posts, comments] = await Promise.all([
+    fetchAbout(username),
+    fetchListing(username, 'submitted'),
+    fetchListing(username, 'comments'),
+  ]);
+
+  const stats = computeStats(about, posts, comments);
+  const suggestions = buildSuggestions(stats);
+
+  return {
+    username: about.name,
+    iconImg: about.icon_img ? about.icon_img.split('?')[0] : null,
+    accountCreatedUtc: about.created_utc,
+    stats,
+    suggestions,
+  };
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 app.get('/api/check/:username', async (req, res) => {
   const username = req.params.username.trim().replace(/^u\//, '');
 
-  if (!/^[A-Za-z0-9_-]{3,20}$/.test(username)) {
+  if (!isValidUsername(username)) {
     return res.status(400).json({ error: 'Enter a valid Reddit username (3-20 characters, letters/numbers/_/-).' });
   }
 
   try {
-    const [about, posts, comments] = await Promise.all([
-      fetchAbout(username),
-      fetchListing(username, 'submitted'),
-      fetchListing(username, 'comments'),
-    ]);
+    res.json(await checkAccount(username));
+  } catch (err) {
+    const status = err.status || 500;
+    res.status(status).json({ error: err.message || 'Something went wrong.' });
+  }
+});
 
-    const stats = computeStats(about, posts, comments);
-    const suggestions = buildSuggestions(stats);
+// --- Team dashboard: employees are assigned to their own, disclosed Reddit
+// accounts. This tracks real account status and a shared focus note — it
+// does not generate or post content on anyone's behalf.
 
-    res.json({
-      username: about.name,
-      iconImg: about.icon_img ? about.icon_img.split('?')[0] : null,
-      accountCreatedUtc: about.created_utc,
-      stats,
-      suggestions,
-    });
+app.get('/api/employees', (req, res) => {
+  res.json(store.listEmployees());
+});
+
+app.post('/api/employees', (req, res) => {
+  const name = (req.body.name || '').trim();
+  if (!name) return res.status(400).json({ error: 'Employee name is required.' });
+  res.status(201).json(store.addEmployee(name));
+});
+
+app.delete('/api/employees/:id', (req, res) => {
+  store.deleteEmployee(req.params.id);
+  res.status(204).end();
+});
+
+app.get('/api/assignments', (req, res) => {
+  res.json(store.listAssignments());
+});
+
+app.post('/api/assignments', (req, res) => {
+  const { employeeId, redditUsername, focusNote } = req.body;
+  const username = (redditUsername || '').trim().replace(/^u\//, '');
+
+  if (!employeeId) return res.status(400).json({ error: 'employeeId is required.' });
+  if (!isValidUsername(username)) {
+    return res.status(400).json({ error: 'Enter a valid Reddit username (3-20 characters, letters/numbers/_/-).' });
+  }
+
+  res.status(201).json(store.addAssignment({ employeeId, redditUsername: username, focusNote }));
+});
+
+app.patch('/api/assignments/:id', (req, res) => {
+  const updated = store.updateAssignment(req.params.id, { focusNote: req.body.focusNote });
+  if (!updated) return res.status(404).json({ error: 'Assignment not found.' });
+  res.json(updated);
+});
+
+app.delete('/api/assignments/:id', (req, res) => {
+  store.deleteAssignment(req.params.id);
+  res.status(204).end();
+});
+
+app.get('/api/assignments/:id/status', async (req, res) => {
+  const assignment = store.getAssignment(req.params.id);
+  if (!assignment) return res.status(404).json({ error: 'Assignment not found.' });
+
+  try {
+    const result = await checkAccount(assignment.redditUsername);
+    res.json(result);
   } catch (err) {
     const status = err.status || 500;
     res.status(status).json({ error: err.message || 'Something went wrong.' });
