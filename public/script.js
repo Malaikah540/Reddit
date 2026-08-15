@@ -12,6 +12,33 @@ const statGrid = document.getElementById('stat-grid');
 const subredditList = document.getElementById('subreddit-list');
 const suggestionList = document.getElementById('suggestion-list');
 
+const statCheckedEl = document.getElementById('stat-checked');
+const statSuggestionsEl = document.getElementById('stat-suggestions');
+let landingStatsCache = { totalChecks: 0, totalSuggestions: 0 };
+
+function animateCount(el, from, to, duration = 900) {
+  if (!el) return;
+  const start = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+async function loadLandingStats() {
+  try {
+    const stats = await fetch('/api/stats').then((r) => r.json());
+    animateCount(statCheckedEl, 0, stats.totalChecks);
+    animateCount(statSuggestionsEl, 0, stats.totalSuggestions);
+    landingStatsCache = stats;
+  } catch {
+    // stats are a nice-to-have; fail silently if unreachable
+  }
+}
+
 function setStatus(message, type) {
   if (!message) {
     statusEl.hidden = true;
@@ -110,6 +137,12 @@ form.addEventListener('submit', async (e) => {
 
     setStatus(null);
     renderResults(data);
+
+    const newChecked = landingStatsCache.totalChecks + 1;
+    const newSuggestions = landingStatsCache.totalSuggestions + data.suggestions.length;
+    animateCount(statCheckedEl, landingStatsCache.totalChecks, newChecked, 500);
+    animateCount(statSuggestionsEl, landingStatsCache.totalSuggestions, newSuggestions, 500);
+    landingStatsCache = { totalChecks: newChecked, totalSuggestions: newSuggestions };
   } catch (err) {
     setStatus('Network error — please try again.', 'error');
     previewEmptyEl.hidden = false;
@@ -126,3 +159,5 @@ document.querySelectorAll('.quick-chip').forEach((chip) => {
 });
 
 if (typeof initLiveBackground === 'function') initLiveBackground('preview-bg');
+
+loadLandingStats();

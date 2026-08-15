@@ -287,6 +287,8 @@ async function checkAccount(username) {
   const stats = computeStats(about, posts, comments);
   const suggestions = buildSuggestions(stats);
 
+  store.recordAccountCheck(suggestions.length);
+
   return {
     username: about.name,
     iconImg: about.icon_img ? about.icon_img.split('?')[0] : null,

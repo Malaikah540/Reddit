@@ -215,6 +215,50 @@ a { color: inherit; }
 .hero:not(.hero-center) .hero-badge { }
 .hero:not(.hero-center) p { margin: 0; }
 
+.landing-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  margin: 1.6rem 0 0;
+  flex-wrap: wrap;
+}
+
+.landing-stat { text-align: center; }
+
+.landing-stat-value {
+  font-size: 2.3rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.landing-stat-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.landing-stat-divider {
+  width: 1px;
+  height: 38px;
+  background: var(--border);
+}
+
+@media (max-width: 560px) {
+  .landing-stats { gap: 1.4rem; }
+  .landing-stat-divider { display: none; }
+  .landing-stat-value { font-size: 1.9rem; }
+}
+
 .big-title {
   font-size: clamp(2.2rem, 5vw, 3.4rem) !important;
   font-weight: 900 !important;

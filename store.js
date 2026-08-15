@@ -10,11 +10,13 @@ const DATA_FILE = path.join(DATA_DIR, 'store.json');
 
 function load() {
   if (!fs.existsSync(DATA_FILE)) {
-    return { employees: [], assignments: [], clients: [], commentChecks: [] };
+    return { employees: [], assignments: [], clients: [], commentChecks: [], totalChecks: 0, totalSuggestions: 0 };
   }
   const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
   if (!data.clients) data.clients = [];
   if (!data.commentChecks) data.commentChecks = [];
+  if (!data.totalChecks) data.totalChecks = 0;
+  if (!data.totalSuggestions) data.totalSuggestions = 0;
   return data;
 }
 
@@ -148,6 +150,13 @@ function addCommentCheck(words, snippet) {
   save(data);
 }
 
+function recordAccountCheck(suggestionCount) {
+  const data = load();
+  data.totalChecks += 1;
+  data.totalSuggestions += suggestionCount || 0;
+  save(data);
+}
+
 function getStats() {
   const data = load();
   return {
@@ -155,6 +164,8 @@ function getStats() {
     assignments: data.assignments.length,
     clients: data.clients.length,
     commentChecks: data.commentChecks.length,
+    totalChecks: data.totalChecks,
+    totalSuggestions: data.totalSuggestions,
   };
 }
 
@@ -175,4 +186,5 @@ module.exports = {
   findSimilarComment,
   addCommentCheck,
   getStats,
+  recordAccountCheck,
 };
