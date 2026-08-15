@@ -5,7 +5,7 @@ const { jaccard } = require('./comment-assistant');
 
 const MAX_COMMENT_CHECKS = 200;
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'store.json');
 
 function load() {
