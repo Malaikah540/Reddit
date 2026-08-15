@@ -22,12 +22,27 @@
     </header>
 
     <div class="main-content">
-      <div class="wrap">
+      <div class="wrap wrap-wide">
         <header class="hero">
-          <span class="hero-badge">👥 Internal</span>
-          <h1>Team <span class="grad">Dashboard</span></h1>
-          <p>Track each teammate's own, disclosed Reddit account and jot shared focus notes.</p>
+          <span class="hero-badge">👥 Team workflow</span>
+          <h1 class="big-title">Run your team's <span class="grad">Reddit presence</span></h1>
+          <p>Four steps: add your team, connect their accounts, monitor real activity, and safety-check drafts before anyone posts.</p>
         </header>
+
+        <div class="stat-strip" id="stat-strip">
+          <div class="stat-strip-item">
+            <div class="stat-strip-value" id="stat-employees">–</div>
+            <div class="stat-strip-label">Teammates</div>
+          </div>
+          <div class="stat-strip-item">
+            <div class="stat-strip-value" id="stat-assignments">–</div>
+            <div class="stat-strip-label">Accounts tracked</div>
+          </div>
+          <div class="stat-strip-item">
+            <div class="stat-strip-value" id="stat-comment-checks">–</div>
+            <div class="stat-strip-label">Comments safety-checked</div>
+          </div>
+        </div>
 
         <div class="disclosure">
           <strong>How to use this:</strong> assignments here should only ever point to an account the
@@ -37,43 +52,119 @@
           anyone's behalf.
         </div>
 
-        <section class="panel">
-          <h3>Employees</h3>
-          <form id="employee-form" class="inline-form">
-            <input id="employee-name" type="text" placeholder="Employee name" required />
-            <button type="submit">Add employee</button>
-          </form>
-          <ul id="employee-list" class="plain-list"></ul>
-        </section>
+        <div class="step-flow">
+          <!-- Step 1 -->
+          <div class="step">
+            <div class="step-marker">
+              <div class="step-number" id="step-number-1">1</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <button type="button" class="step-header" data-step-toggle aria-expanded="true" aria-controls="step-body-1">
+                <div>
+                  <div class="step-eyebrow">Step 1</div>
+                  <h3 class="step-title">👤 Add your team</h3>
+                  <p class="step-desc" id="step-desc-1">Add each teammate who'll be checking or engaging on Reddit.</p>
+                </div>
+                <span class="step-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="step-body-wrapper" id="step-body-1">
+                <div class="step-body-inner">
+                  <div class="step-body-content panel">
+                    <form id="employee-form" class="inline-form">
+                      <input id="employee-name" type="text" placeholder="Employee name" required />
+                      <button type="submit">Add employee</button>
+                    </form>
+                    <ul id="employee-list" class="plain-list"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <section class="panel">
-          <h3>New assignment</h3>
-          <form id="assignment-form" class="inline-form stacked">
-            <select id="assignment-employee" required></select>
-            <input id="assignment-username" type="text" placeholder="Their Reddit username" required />
-            <textarea id="assignment-note" placeholder="Focus note for today (e.g. subreddit/topic to engage with, in their own voice)"></textarea>
-            <button type="submit">Add assignment</button>
-          </form>
-        </section>
+          <!-- Step 2 -->
+          <div class="step">
+            <div class="step-marker">
+              <div class="step-number" id="step-number-2">2</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <button type="button" class="step-header" data-step-toggle aria-expanded="true" aria-controls="step-body-2">
+                <div>
+                  <div class="step-eyebrow">Step 2</div>
+                  <h3 class="step-title">🔗 Connect their Reddit accounts</h3>
+                  <p class="step-desc">Assign each teammate to their own, disclosed Reddit account and today's focus note.</p>
+                </div>
+                <span class="step-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="step-body-wrapper" id="step-body-2">
+                <div class="step-body-inner">
+                  <div class="step-body-content panel">
+                    <form id="assignment-form" class="inline-form stacked">
+                      <select id="assignment-employee" required></select>
+                      <input id="assignment-username" type="text" placeholder="Their Reddit username" required />
+                      <textarea id="assignment-note" placeholder="Focus note for today (e.g. subreddit/topic to engage with, in their own voice)"></textarea>
+                      <button type="submit">Add assignment</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <section class="panel">
-          <h3>Assignments</h3>
-          <div id="assignment-list" class="assignment-list"></div>
-        </section>
+          <!-- Step 3 -->
+          <div class="step">
+            <div class="step-marker">
+              <div class="step-number" id="step-number-3">3</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <button type="button" class="step-header" data-step-toggle aria-expanded="true" aria-controls="step-body-3">
+                <div>
+                  <div class="step-eyebrow">Step 3</div>
+                  <h3 class="step-title">📊 Monitor real account status</h3>
+                  <p class="step-desc" id="step-desc-3">Pull live karma, activity, and subreddit history for each assigned account.</p>
+                </div>
+                <span class="step-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="step-body-wrapper" id="step-body-3">
+                <div class="step-body-inner">
+                  <div class="step-body-content">
+                    <div id="assignment-list" class="assignment-list"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <section class="panel">
-          <h3>Comment Assistant</h3>
-          <p class="muted" style="margin-top:-0.4rem;">
-            Paste a comment draft you've already written (even with a little AI help) to check its
-            tone and get a safety read before posting. This gives feedback only — it never rewrites,
-            generates, or disguises anything for you.
-          </p>
-          <form id="comment-check-form" class="inline-form stacked">
-            <textarea id="comment-check-input" placeholder="Paste your draft comment here..." required></textarea>
-            <button type="submit">Check comment</button>
-          </form>
-          <div id="comment-check-result"></div>
-        </section>
+          <!-- Step 4 -->
+          <div class="step">
+            <div class="step-marker">
+              <div class="step-number" id="step-number-4">4</div>
+            </div>
+            <div class="step-content">
+              <button type="button" class="step-header" data-step-toggle aria-expanded="true" aria-controls="step-body-4">
+                <div>
+                  <div class="step-eyebrow">Step 4</div>
+                  <h3 class="step-title">🛡️ Comment safety check</h3>
+                  <p class="step-desc">Paste a comment draft to check its tone and get a safety score before it's posted. Feedback only — nothing is rewritten, generated, or disguised.</p>
+                </div>
+                <span class="step-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div class="step-body-wrapper" id="step-body-4">
+                <div class="step-body-inner">
+                  <div class="step-body-content panel">
+                    <form id="comment-check-form" class="inline-form stacked">
+                      <textarea id="comment-check-input" placeholder="Paste your draft comment here..." required></textarea>
+                      <button type="submit">Check comment</button>
+                    </form>
+                    <div id="comment-check-result"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

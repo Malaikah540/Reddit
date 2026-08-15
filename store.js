@@ -148,6 +148,16 @@ function addCommentCheck(words, snippet) {
   save(data);
 }
 
+function getStats() {
+  const data = load();
+  return {
+    employees: data.employees.length,
+    assignments: data.assignments.length,
+    clients: data.clients.length,
+    commentChecks: data.commentChecks.length,
+  };
+}
+
 module.exports = {
   listEmployees,
   addEmployee,
@@ -164,4 +174,5 @@ module.exports = {
   deleteClient,
   findSimilarComment,
   addCommentCheck,
+  getStats,
 };

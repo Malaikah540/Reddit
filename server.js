@@ -318,6 +318,10 @@ app.get('/api/check/:username', async (req, res) => {
 // accounts. This tracks real account status and a shared focus note — it
 // does not generate or post content on anyone's behalf.
 
+app.get('/api/stats', (req, res) => {
+  res.json(store.getStats());
+});
+
 app.get('/api/employees', (req, res) => {
   res.json(store.listEmployees());
 });

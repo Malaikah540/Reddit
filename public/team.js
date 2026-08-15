@@ -14,12 +14,52 @@ let assignments = [];
 async function loadEmployees() {
   employees = await fetch('/api/employees').then((r) => r.json());
   renderEmployees();
+  loadStats();
 }
 
 async function loadAssignments() {
   assignments = await fetch('/api/assignments').then((r) => r.json());
   renderAssignments();
+  loadStats();
 }
+
+async function loadStats() {
+  const stats = await fetch('/api/stats').then((r) => r.json());
+
+  document.getElementById('stat-employees').textContent = stats.employees;
+  document.getElementById('stat-assignments').textContent = stats.assignments;
+  document.getElementById('stat-comment-checks').textContent = stats.commentChecks;
+
+  document.getElementById('step-number-1').classList.toggle('complete', stats.employees > 0);
+  document.getElementById('step-number-2').classList.toggle('complete', stats.assignments > 0);
+  document.getElementById('step-number-3').classList.toggle('complete', stats.assignments > 0);
+  document.getElementById('step-number-4').classList.toggle('complete', stats.commentChecks > 0);
+
+  const desc1 = document.getElementById('step-desc-1');
+  if (desc1) {
+    desc1.textContent =
+      stats.employees > 0
+        ? `${stats.employees} teammate${stats.employees === 1 ? '' : 's'} added.`
+        : "Add each teammate who'll be checking or engaging on Reddit.";
+  }
+
+  const desc3 = document.getElementById('step-desc-3');
+  if (desc3) {
+    desc3.textContent =
+      stats.assignments > 0
+        ? `Tracking ${stats.assignments} account${stats.assignments === 1 ? '' : 's'}. Pull live karma, activity, and subreddit history any time.`
+        : 'Pull live karma, activity, and subreddit history for each assigned account.';
+  }
+}
+
+document.querySelectorAll('[data-step-toggle]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const body = document.getElementById(btn.getAttribute('aria-controls'));
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    body.classList.toggle('collapsed', expanded);
+  });
+});
 
 function renderEmployees() {
   employeeList.innerHTML = '';
@@ -214,6 +254,8 @@ commentCheckForm.addEventListener('submit', async (e) => {
       ${aiHtml}
     </div>
   `;
+
+  loadStats();
 });
 
 loadEmployees();
