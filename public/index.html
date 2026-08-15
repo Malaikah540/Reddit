@@ -20,48 +20,69 @@
     </aside>
 
     <div class="main-content">
-      <div class="wrap">
+      <div class="wrap wrap-wide">
         <header class="hero hero-center">
           <span class="hero-badge">⚡ Free internal tool</span>
-          <h1>Know exactly where your <span class="grad">Reddit account</span> stands</h1>
-          <p>Enter a username for a full breakdown: karma, posting activity, and clear next steps to grow it.</p>
+          <h1 class="big-title">Every account,<br /><span class="grad">audited in seconds</span></h1>
+          <p>Enter a Reddit username for a full breakdown: karma, posting activity, and clear next steps to grow it.</p>
         </header>
 
-        <form id="check-form" class="search-form">
-          <input
-            id="username-input"
-            type="text"
-            placeholder="e.g. spez or u/spez"
-            autocomplete="off"
-            maxlength="20"
-            required
-          />
-          <button type="submit" id="submit-btn">Check account</button>
-        </form>
+        <div class="split-hero-grid">
+          <form id="check-form" class="form-panel">
+            <label class="field-label" for="username-input">Reddit username</label>
+            <input
+              id="username-input"
+              type="text"
+              placeholder="e.g. spez or u/spez"
+              autocomplete="off"
+              maxlength="20"
+              required
+            />
 
-        <div id="status" class="status" hidden></div>
-
-        <section id="results" class="results" hidden>
-          <div class="profile-card">
-            <img id="profile-icon" class="avatar" src="" alt="" hidden />
-            <div>
-              <h2 id="profile-name"></h2>
-              <p id="profile-age" class="muted"></p>
+            <div class="quick-chips">
+              <span class="quick-chips-label">Try one</span>
+              <button type="button" class="quick-chip" data-username="spez">u/spez</button>
+              <button type="button" class="quick-chip" data-username="AutoModerator">u/AutoModerator</button>
+              <button type="button" class="quick-chip" data-username="GallowBoob">u/GallowBoob</button>
             </div>
-          </div>
 
-          <div class="stat-grid" id="stat-grid"></div>
+            <button type="submit" id="submit-btn">Check account <span aria-hidden="true">→</span></button>
+            <p class="form-caption">Free · Uses Reddit's public API · No login required</p>
 
-          <div class="panel">
-            <h3>Top subreddits</h3>
-            <div id="subreddit-list" class="chip-list"></div>
-          </div>
+            <div id="status" class="status" hidden></div>
+          </form>
 
-          <div class="panel">
-            <h3>Suggestions</h3>
-            <ul id="suggestion-list" class="suggestion-list"></ul>
+          <div class="preview-panel">
+            <span class="preview-badge">Preview</span>
+
+            <div id="preview-empty" class="preview-empty">
+              <div class="preview-empty-icon">🛰️</div>
+              <p>Run a check to see the live account breakdown here.</p>
+            </div>
+
+            <section id="results" class="results" hidden>
+              <div class="profile-card">
+                <img id="profile-icon" class="avatar" src="" alt="" hidden />
+                <div>
+                  <h2 id="profile-name"></h2>
+                  <p id="profile-age" class="muted"></p>
+                </div>
+              </div>
+
+              <div class="stat-grid" id="stat-grid"></div>
+
+              <div class="panel">
+                <h3>Top subreddits</h3>
+                <div id="subreddit-list" class="chip-list"></div>
+              </div>
+
+              <div class="panel">
+                <h3>Suggestions</h3>
+                <ul id="suggestion-list" class="suggestion-list"></ul>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   </div>

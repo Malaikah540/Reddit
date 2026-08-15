@@ -3,6 +3,7 @@ const input = document.getElementById('username-input');
 const submitBtn = document.getElementById('submit-btn');
 const statusEl = document.getElementById('status');
 const resultsEl = document.getElementById('results');
+const previewEmptyEl = document.getElementById('preview-empty');
 
 const profileIcon = document.getElementById('profile-icon');
 const profileName = document.getElementById('profile-name');
@@ -84,6 +85,7 @@ function renderResults(data) {
     suggestionList.append(li);
   }
 
+  previewEmptyEl.hidden = true;
   resultsEl.hidden = false;
 }
 
@@ -102,6 +104,7 @@ form.addEventListener('submit', async (e) => {
 
     if (!res.ok) {
       setStatus(data.error || 'Something went wrong.', 'error');
+      previewEmptyEl.hidden = false;
       return;
     }
 
@@ -109,7 +112,15 @@ form.addEventListener('submit', async (e) => {
     renderResults(data);
   } catch (err) {
     setStatus('Network error — please try again.', 'error');
+    previewEmptyEl.hidden = false;
   } finally {
     submitBtn.disabled = false;
   }
+});
+
+document.querySelectorAll('.quick-chip').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    input.value = chip.dataset.username;
+    form.requestSubmit();
+  });
 });

@@ -18,6 +18,7 @@
   --radius-md: 13px;
   --radius-sm: 9px;
   --gold: #f5b642;
+  --reddit: #ff4500;
 }
 
 :root[data-theme='light'] {
@@ -154,6 +155,8 @@ a { color: inherit; }
   margin: 0 auto;
 }
 
+.wrap-wide { max-width: 1080px; }
+
 @media (max-width: 780px) {
   .app-shell { flex-direction: column; }
   .sidebar {
@@ -214,6 +217,176 @@ a { color: inherit; }
 .hero:not(.hero-center) { text-align: left; }
 .hero:not(.hero-center) .hero-badge { }
 .hero:not(.hero-center) p { margin: 0; }
+
+.big-title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.05 !important;
+}
+
+/* ---------- Split hero: form + live preview ---------- */
+
+.split-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+  margin-top: 2rem;
+}
+
+@media (max-width: 860px) {
+  .split-hero-grid { grid-template-columns: 1fr; }
+}
+
+.form-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: fit-content;
+}
+
+.field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.1rem;
+}
+
+.form-panel input#username-input {
+  width: 100%;
+  margin-bottom: 0.3rem;
+}
+
+.quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.quick-chips-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-right: 0.15rem;
+}
+
+.quick-chip {
+  border: 1px solid var(--border);
+  background: var(--card-soft);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, transform 0.08s ease;
+}
+
+.quick-chip:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+.form-panel #submit-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.form-caption {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0.6rem 0 0;
+}
+
+.form-panel .status { margin: 0.6rem 0 0; padding: 0.7rem; }
+
+.preview-panel {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+
+.preview-panel::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.32), transparent 55%),
+    radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.28), transparent 55%),
+    radial-gradient(circle at 50% 95%, rgba(255, 69, 0, 0.22), transparent 55%);
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.preview-panel > * { position: relative; z-index: 1; }
+
+.preview-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 1rem;
+}
+
+:root[data-theme='light'] .preview-badge {
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.preview-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  gap: 0.6rem;
+  min-height: 320px;
+}
+
+.preview-empty[hidden] { display: none; }
+
+.preview-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+}
+
+.preview-panel .results { animation: fadeInUp 0.35s ease both; }
 
 .disclosure {
   background: var(--card);
