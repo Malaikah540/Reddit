@@ -51,37 +51,47 @@ body {
 
 a { color: inherit; }
 
-/* ---------- App shell ---------- */
+/* ---------- App shell (top navbar) ---------- */
 
-.app-shell {
-  display: flex;
+.page-shell {
   min-height: 100vh;
-}
-
-.sidebar {
-  width: 230px;
-  flex-shrink: 0;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
-  padding: 1.75rem 1.25rem;
-  position: sticky;
-  top: 0;
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.sidebar .brand {
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 2rem;
+  background: color-mix(in srgb, var(--sidebar-bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-width: 0;
+}
+
+.brand {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 2rem;
   font-weight: 800;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
+  flex-shrink: 0;
 }
 
-.sidebar .brand .mark {
+.brand .mark {
   width: 32px;
   height: 32px;
   border-radius: 10px;
@@ -95,43 +105,37 @@ a { color: inherit; }
   box-shadow: 0 6px 16px -6px rgba(139, 92, 246, 0.6);
 }
 
-.sidebar nav {
+.topbar nav {
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  align-items: center;
+  gap: 0.3rem;
+  overflow-x: auto;
 }
 
-.sidebar nav a {
+.topbar nav a {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
   text-decoration: none;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.88rem;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.sidebar nav a:hover {
-  background: var(--card-soft);
-  color: var(--text);
-  transform: translateX(2px);
-}
+.topbar nav a:hover { background: var(--card-soft); color: var(--text); }
 
-.sidebar nav a.active {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
+.topbar nav a.active { background: var(--accent-soft); color: var(--accent); }
 
 .theme-toggle {
-  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--card-soft);
   color: var(--muted);
@@ -139,6 +143,7 @@ a { color: inherit; }
   font-size: 0.82rem;
   font-weight: 600;
   font-family: inherit;
+  flex-shrink: 0;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -147,7 +152,7 @@ a { color: inherit; }
 .main-content {
   flex: 1;
   min-width: 0;
-  padding: 2.5rem 2.5rem 4rem;
+  padding: 2.5rem 2rem 4rem;
 }
 
 .wrap {
@@ -158,17 +163,9 @@ a { color: inherit; }
 .wrap-wide { max-width: 1080px; }
 
 @media (max-width: 780px) {
-  .app-shell { flex-direction: column; }
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: static;
-    padding: 1rem 1.25rem;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar nav { flex-direction: row; flex-wrap: wrap; }
-  .theme-toggle { margin-top: 0.75rem; }
+  .topbar { flex-wrap: wrap; padding: 0.85rem 1.25rem; }
+  .topbar-inner { flex-wrap: wrap; gap: 0.75rem; width: 100%; }
+  .topbar nav { flex-wrap: wrap; }
   .main-content { padding: 1.75rem 1.25rem 3rem; }
 }
 
@@ -322,20 +319,19 @@ a { color: inherit; }
   background: var(--card);
 }
 
-.preview-panel::before {
-  content: '';
+.preview-bg-canvas {
   position: absolute;
-  inset: -30%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
   background:
     radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.32), transparent 55%),
     radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.28), transparent 55%),
     radial-gradient(circle at 50% 95%, rgba(255, 69, 0, 0.22), transparent 55%);
-  filter: blur(50px);
-  z-index: 0;
-  pointer-events: none;
 }
 
-.preview-panel > * { position: relative; z-index: 1; }
+.preview-panel > *:not(.preview-bg-canvas) { position: relative; z-index: 1; }
 
 .preview-badge {
   display: inline-flex;

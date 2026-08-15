@@ -124,3 +124,5 @@ document.querySelectorAll('.quick-chip').forEach((chip) => {
     form.requestSubmit();
   });
 });
+
+if (typeof initLiveBackground === 'function') initLiveBackground('preview-bg');

@@ -8,16 +8,18 @@
 <script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand"><span class="mark">R</span> Account Suite</div>
-      <nav>
-        <a href="index.html" class="active">Account Checker</a>
-        <a href="team.html">Team Dashboard</a>
-        <a href="clients.html">Clients</a>
-      </nav>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand"><span class="mark">R</span> Account Suite</div>
+        <nav>
+          <a href="index.html" class="active">Account Checker</a>
+          <a href="team.html">Team Dashboard</a>
+          <a href="clients.html">Clients</a>
+        </nav>
+      </div>
       <button id="theme-toggle" class="theme-toggle" type="button"></button>
-    </aside>
+    </header>
 
     <div class="main-content">
       <div class="wrap wrap-wide">
@@ -53,6 +55,7 @@
           </form>
 
           <div class="preview-panel">
+            <canvas id="preview-bg" class="preview-bg-canvas"></canvas>
             <span class="preview-badge">Preview</span>
 
             <div id="preview-empty" class="preview-empty">
@@ -88,6 +91,7 @@
   </div>
 
   <script src="theme.js"></script>
+  <script src="bg-canvas.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
