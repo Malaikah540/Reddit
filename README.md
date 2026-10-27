@@ -1,6 +1,6 @@
 # Reddit Account Checker
 
-A small internal web tool with three parts, linked from the sidebar:
+A Node.js + Express web app with three parts, linked from the top navigation bar:
 
 - **Account Checker** — look up any public Reddit username and see karma,
   recent activity stats, and personalized suggestions for improving the
